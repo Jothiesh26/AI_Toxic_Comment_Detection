@@ -1,4 +1,3 @@
-
 const comment = document.getElementById("comment");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const clearBtn = document.getElementById("clearBtn");
@@ -9,10 +8,13 @@ const classification = document.getElementById("classification");
 const verdictBox = document.getElementById("verdictBox");
 const verdictIcon = document.getElementById("verdictIcon");
 const verdictDescription = document.getElementById("verdictDescription");
+const verdictPill = document.getElementById("verdictPill");
 const toxicityScore = document.getElementById("toxicityScore");
 const progressBar = document.getElementById("progressBar");
 const dfaMatches = document.getElementById("dfaMatches");
 const automatonStates = document.getElementById("automatonStates");
+
+const breakdownLabels = ["toxic", "severe_toxic", "insult", "obscene", "threat", "identity_hate"];
 
 let requestController = null;
 
@@ -25,13 +27,24 @@ function resetResults() {
   verdictIcon.textContent = "🔎";
   classification.textContent = "Ready to Analyze";
   verdictDescription.textContent =
-    "Enter a comment to view the prediction.";
+    "Enter a comment above or select a preset sample to view toxicity diagnostics.";
+
+  if (verdictPill) {
+    verdictPill.textContent = "Awaiting Input";
+  }
 
   toxicityScore.textContent = "--";
   progressBar.style.width = "0%";
   dfaMatches.textContent = "--";
   automatonStates.textContent = "--";
   errorMessage.textContent = "";
+
+  breakdownLabels.forEach(label => {
+    const valEl = document.getElementById(`val-${label}`);
+    const barEl = document.getElementById(`bar-${label}`);
+    if (valEl) valEl.textContent = "0.0%";
+    if (barEl) barEl.style.width = "0%";
+  });
 }
 
 function showResult(data) {
@@ -44,9 +57,13 @@ function showResult(data) {
   verdictIcon.textContent = isToxic ? "⚠️" : "✅";
   classification.textContent = data.classification;
 
+  if (verdictPill) {
+    verdictPill.textContent = isToxic ? "Toxic Content" : "Safe Comment";
+  }
+
   verdictDescription.textContent = isToxic
-    ? "The system detected potentially toxic content."
-    : "The comment does not appear to contain toxic content.";
+    ? "The system detected potentially toxic, hostile, or abusive language."
+    : "No toxic patterns detected. The comment appears respectful and clean.";
 
   // The Flask backend returns ai_score between 0 and 1.
   const rawScore = Number(data.ai_score);
@@ -67,19 +84,32 @@ function showResult(data) {
 
   automatonStates.textContent =
     data.automata_states ?? "--";
+
+  // Detailed multi-label probabilities from BERT
+  if (data.model_labels && typeof data.model_labels === "object") {
+    breakdownLabels.forEach(label => {
+      const prob = Number(data.model_labels[label]) || 0;
+      const pct = Math.max(0, Math.min(100, prob * 100));
+      const valEl = document.getElementById(`val-${label}`);
+      const barEl = document.getElementById(`bar-${label}`);
+      if (valEl) valEl.textContent = pct.toFixed(1) + "%";
+      if (barEl) barEl.style.width = pct + "%";
+    });
+  }
 }
 
 analyzeBtn.addEventListener("click", async () => {
   const text = comment.value.trim();
 
   if (!text) {
-    errorMessage.textContent = "Please enter a comment.";
+    errorMessage.textContent = "Please enter a comment to analyze.";
+    comment.focus();
     return;
   }
 
   errorMessage.textContent = "";
   analyzeBtn.disabled = true;
-  analyzeBtn.textContent = "Analyzing...";
+  analyzeBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Analyzing with AI...</span>';
 
   requestController = new AbortController();
 
@@ -108,7 +138,7 @@ analyzeBtn.addEventListener("click", async () => {
     }
   } finally {
     analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "🔍 Analyze Comment";
+    analyzeBtn.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">Analyze Comment</span>';
     requestController = null;
   }
 });
@@ -120,6 +150,7 @@ clearBtn.addEventListener("click", () => {
   comment.value = "";
   charCount.textContent = "0";
   resetResults();
+  comment.focus();
 });
 
 document.querySelectorAll(".sample").forEach(button => {

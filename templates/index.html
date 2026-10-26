@@ -1,180 +1,360 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Toxic Comment Detection</title>
+  <title>AI Toxic Comment Detection | Automata & SLM</title>
+  <meta name="description"
+    content="AI-based toxic comment detection combining finite automata keyword matching and machine learning.">
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-<header class="navbar">
-  <div class="brand">
-    <div class="brand-icon">🛡️</div>
-    <div>
-      <h2>AI Toxic Comment Detection</h2>
-      <p>Finite Automata + Machine Learning</p>
-    </div>
-  </div>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#how">How It Works</a>
-    <a href="#about">About</a>
-  </nav>
-</header>
+  <!-- Ambient Background Glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
 
-<main id="home">
-  <section class="hero">
-    <div class="hero-badge">✨ Intelligent Content Moderation</div>
-    <h1>Detect <span>Toxic Comments</span> with AI</h1>
-    <p>
-      A hybrid approach combining Finite Automata keyword
-      matching and Machine Learning to identify toxic,
-      abusive and harmful comments.
-    </p>
-  </section>
-
-  <section class="dashboard">
-
-    <div class="card input-card">
-      <div class="card-heading">
-        <div>
-          <h2>💬 Enter a Comment</h2>
-          <p>Type or paste a comment to analyze its toxicity.</p>
-        </div>
-        <span class="small-badge">Max 2000 characters</span>
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon-wrapper">
+        <span class="brand-icon">🛡️</span>
+        <div class="brand-pulse"></div>
       </div>
-
-      <textarea id="comment"
-        maxlength="2000"
-        placeholder="Enter your comment here..."></textarea>
-
-      <div class="counter">
-        <span id="charCount">0</span> / 2000
+      <div>
+        <h2>AI Toxic Comment Detection</h2>
+        <p class="brand-subtitle">Finite Automata (DFA) + Deep Learning (BERT)</p>
       </div>
-
-      <div class="button-row">
-        <button id="analyzeBtn" class="primary-btn">
-          🔍 Analyze Comment
-        </button>
-        <button id="clearBtn" class="secondary-btn">
-          Clear
-        </button>
-      </div>
-      <p id="errorMessage" class="error-message" role="alert"></p>
     </div>
 
-    <div class="card result-card">
-      <div class="card-heading">
-        <h2>📊 Analysis Result</h2>
-        <span class="small-badge">AI + DFA</span>
+    <div class="nav-right">
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span class="status-text">System Active</span>
       </div>
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#how">Architecture</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
 
-      <div id="verdictBox" class="verdict neutral">
-        <div class="verdict-icon" id="verdictIcon">🔎</div>
-        <div>
-          <h2 id="classification">Ready to Analyze</h2>
-          <p id="verdictDescription">
-            Enter a comment to view the prediction.
-          </p>
+  <main id="home">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-sparkle">✨</span>
+        <span>Intelligent Content Moderation System</span>
+      </div>
+      <h1>Detect <span>Toxic Comments</span> with Precision AI</h1>
+      <p>
+        A high-performance hybrid pipeline merging deterministic Finite Automata
+        pattern recognition with deep contextual transformer intelligence.
+      </p>
+    </section>
+
+    <!-- Interactive Dashboard -->
+    <section class="dashboard">
+
+      <!-- Input Card -->
+      <div class="card input-card">
+        <div class="card-heading">
+          <div class="card-title-group">
+            <div class="card-icon-badge">💬</div>
+            <div>
+              <h2>Enter Comment</h2>
+              <p>Type or paste any user message to evaluate toxicity.</p>
+            </div>
+          </div>
+          <span class="small-badge">Max 2,000 chars</span>
         </div>
-      </div>
 
-      <div class="metrics">
-        <div class="metric">
-          <span>🧠 AI Toxicity Score</span>
-          <h2 id="toxicityScore">--</h2>
-          <div class="progress">
-            <div id="progressBar"></div>
+        <div class="textarea-wrapper">
+          <textarea id="comment" maxlength="2000"
+            placeholder="Type or paste a comment here to test toxicity (e.g. 'You did an awesome job!' or click a sample below)..."
+            spellcheck="false"></textarea>
+        </div>
+
+        <div class="input-footer">
+          <div class="counter">
+            <span id="charCount">0</span> / 2000 characters
           </div>
         </div>
 
-        <div class="metric">
-          <span>🔎 DFA Matches</span>
-          <h2 id="dfaMatches">--</h2>
+        <div class="button-row">
+          <button id="analyzeBtn" class="primary-btn">
+            <span class="btn-icon">🔍</span>
+            <span class="btn-text">Analyze Comment</span>
+          </button>
+          <button id="clearBtn" class="secondary-btn">
+            <span class="btn-icon">↺</span>
+            <span class="btn-text">Clear</span>
+          </button>
+        </div>
+        <p id="errorMessage" class="error-message" role="alert"></p>
+      </div>
+
+      <!-- Result Card -->
+      <div class="card result-card">
+        <div class="card-heading">
+          <div class="card-title-group">
+            <div class="card-icon-badge">📊</div>
+            <div>
+              <h2>Analysis Verdict</h2>
+              <p>Real-time synthesis of DFA matcher & AI confidence</p>
+            </div>
+          </div>
+          <span class="small-badge hybrid-badge">DFA + Toxic-BERT</span>
         </div>
 
-        <div class="metric">
-          <span>🔗 Automaton States</span>
-          <h2 id="automatonStates">--</h2>
+        <!-- Verdict Banner -->
+        <div id="verdictBox" class="verdict neutral">
+          <div class="verdict-icon-container">
+            <div class="verdict-icon" id="verdictIcon">🔎</div>
+          </div>
+          <div class="verdict-content">
+            <div class="verdict-header">
+              <h2 id="classification">Ready to Analyze</h2>
+              <span id="verdictPill" class="verdict-pill">Awaiting Input</span>
+            </div>
+            <p id="verdictDescription">
+              Enter a comment above or select a preset sample to view toxicity diagnostics.
+            </p>
+          </div>
         </div>
 
-        <div class="metric">
-          <span>⚙️ Detection Method</span>
-          <h3>Machine Learning + DFA</h3>
+        <!-- Key Metrics Grid -->
+        <div class="metrics">
+          <div class="metric metric-score">
+            <div class="metric-header">
+              <span>🧠 AI Toxicity Score</span>
+              <span class="metric-tag">BERT</span>
+            </div>
+            <h2 id="toxicityScore">--</h2>
+            <div class="progress">
+              <div id="progressBar"></div>
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-header">
+              <span>🔎 DFA Matches</span>
+              <span class="metric-tag">Automata</span>
+            </div>
+            <h2 id="dfaMatches">--</h2>
+          </div>
+
+          <div class="metric">
+            <div class="metric-header">
+              <span>🔗 Automaton States</span>
+              <span class="metric-tag">Trie DFA</span>
+            </div>
+            <h2 id="automatonStates">--</h2>
+          </div>
+
+          <div class="metric">
+            <div class="metric-header">
+              <span>⚙️ Pipeline Mode</span>
+              <span class="metric-tag">Hybrid</span>
+            </div>
+            <h3>Deterministic + Neural</h3>
+          </div>
+        </div>
+
+        <!-- Detailed Label Breakdown (BERT multi-label breakdown) -->
+        <div class="breakdown-section" id="breakdownSection">
+          <div class="breakdown-title">
+            <span>Detailed Category Probabilities</span>
+            <span class="breakdown-hint">Transformer Output</span>
+          </div>
+          <div class="breakdown-grid" id="breakdownGrid">
+            <div class="breakdown-item" data-label="toxic">
+              <div class="breakdown-label">
+                <span>Toxic</span>
+                <span class="breakdown-val" id="val-toxic">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-toxic" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="breakdown-item" data-label="severe_toxic">
+              <div class="breakdown-label">
+                <span>Severe Toxic</span>
+                <span class="breakdown-val" id="val-severe_toxic">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-severe_toxic" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="breakdown-item" data-label="insult">
+              <div class="breakdown-label">
+                <span>Insult</span>
+                <span class="breakdown-val" id="val-insult">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-insult" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="breakdown-item" data-label="obscene">
+              <div class="breakdown-label">
+                <span>Obscene</span>
+                <span class="breakdown-val" id="val-obscene">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-obscene" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="breakdown-item" data-label="threat">
+              <div class="breakdown-label">
+                <span>Threat</span>
+                <span class="breakdown-val" id="val-threat">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-threat" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="breakdown-item" data-label="identity_hate">
+              <div class="breakdown-label">
+                <span>Identity Hate</span>
+                <span class="breakdown-val" id="val-identity_hate">0.0%</span>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" id="bar-identity_hate" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive Samples Section -->
+    <section class="samples card">
+      <div class="card-heading">
+        <div class="card-title-group">
+          <div class="card-icon-badge">💡</div>
+          <div>
+            <h2>Test Samples</h2>
+            <p>Quick-test predetermined statements to evaluate classification dynamics.</p>
+          </div>
+        </div>
+        <span class="small-badge">Instant Load</span>
+      </div>
+
+      <div class="sample-grid">
+        <button class="sample toxic-sample" data-comment="You are an idiot">
+          <span class="sample-indicator">⚠️</span>
+          <span class="sample-text">You are an idiot</span>
+        </button>
+        <button class="sample toxic-sample" data-comment="Shut up, loser">
+          <span class="sample-indicator">⚠️</span>
+          <span class="sample-text">Shut up, loser</span>
+        </button>
+        <button class="sample toxic-sample" data-comment="You are stupid">
+          <span class="sample-indicator">⚠️</span>
+          <span class="sample-text">You are stupid</span>
+        </button>
+        <button class="sample safe-sample" data-comment="Thank you for helping">
+          <span class="sample-indicator">✨</span>
+          <span class="sample-text">Thank you for helping</span>
+        </button>
+        <button class="sample safe-sample" data-comment="Have a nice day">
+          <span class="sample-indicator">✨</span>
+          <span class="sample-text">Have a nice day</span>
+        </button>
+        <button class="sample safe-sample" data-comment="You are a good person">
+          <span class="sample-indicator">✨</span>
+          <span class="sample-text">You are a good person</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Architecture / How It Works -->
+    <section id="how" class="how-section card">
+      <div class="how-header">
+        <div class="hero-badge">Architecture Overview</div>
+        <h2>⚙️ Dual-Stage Hybrid Engine</h2>
+        <p>How Finite State Automata and Contextual Transformers collaborate to detect toxicity.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-badge">
+            <span class="step-number">01</span>
+            <span class="step-tag">O(N) Match</span>
+          </div>
+          <h3>Aho-Corasick DFA</h3>
+          <p>
+            Constructs a deterministic finite-state automaton with keyword failure links. Scans input text in linear
+            time to immediately catch known abusive phrases.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-badge">
+            <span class="step-number">02</span>
+            <span class="step-tag">Deep NLP</span>
+          </div>
+          <h3>Toxic-BERT Classifier</h3>
+          <p>
+            Leverages a pretrained transformer to inspect nuanced semantics, toxic context, and implicit harassment
+            across multiple toxicity sub-categories.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-badge">
+            <span class="step-number">03</span>
+            <span class="step-tag">Synthesis</span>
+          </div>
+          <h3>Hybrid Decision Rule</h3>
+          <p>
+            Merges deterministic pattern hit verification with model confidence thresholds, providing high sensitivity
+            and transparent explainability.
+          </p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="samples card">
-    <h2>💡 Try Sample Comments</h2>
-    <p>Click an example to test the model.</p>
-
-    <div class="sample-grid">
-      <button class="sample toxic-sample"
-        data-comment="You are an idiot">
-        You are an idiot
-      </button>
-      <button class="sample toxic-sample"
-        data-comment="Shut up, loser">
-        Shut up, loser
-      </button>
-      <button class="sample toxic-sample"
-        data-comment="You are stupid">
-        You are stupid
-      </button>
-      <button class="sample safe-sample"
-        data-comment="Thank you for helping">
-        Thank you for helping
-      </button>
-      <button class="sample safe-sample"
-        data-comment="Have a nice day">
-        Have a nice day
-      </button>
-      <button class="sample safe-sample"
-        data-comment="You are a good person">
-        You are a good person
-      </button>
-    </div>
-  </section>
-
-  <section id="how" class="how-section">
-    <h2>⚙️ How It Works</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">01</div>
-        <h3>Keyword Matching</h3>
-        <p>Finite Automata identifies matching keywords and phrases.</p>
+    <!-- About Section -->
+    <section id="about" class="about-section card">
+      <div class="about-content">
+        <div class="about-icon">🛡️</div>
+        <h2>About This Project</h2>
+        <p>
+          An educational AI & Formal Language Automata system demonstrating
+          how theoretical computer science (automata & formal language theory)
+          synergizes with modern deep learning representations to combat online abuse.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Flask 3.x</span>
+          <span class="tech-tag">PyTorch 2.x</span>
+          <span class="tech-tag">HuggingFace Transformers</span>
+          <span class="tech-tag">Toxic-BERT</span>
+          <span class="tech-tag">Aho-Corasick Trie</span>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-number">02</div>
-        <h3>ML Prediction</h3>
-        <p>The trained model analyzes the context of the comment.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">03</div>
-        <h3>Hybrid Decision</h3>
-        <p>Both methods contribute to the final classification.</p>
-      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p>AI Toxic Comment Detection &bull; Hybrid Automata &amp; Machine Learning Engine</p>
     </div>
-  </section>
+  </footer>
 
-  <section id="about" class="about-section">
-    <h2>About This Project</h2>
-    <p>
-      An educational AI project demonstrating toxic comment
-      classification using Machine Learning and Finite Automata.
-      Automated predictions can make mistakes and should be reviewed.
-    </p>
-  </section>
-</main>
-
-<footer>
-  AI Toxic Comment Detection | Educational Project
-</footer>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>
